@@ -1,0 +1,17 @@
+#header {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-bottom: 30px;
+}
+
+.panel-body table tr td { padding-left: 15px;}
+.panel-body .table {margin-bottom: 0px;}
+
+#panelcontent {
+    padding: 20px;
+}
+
+.levelUpButton {
+    
+}

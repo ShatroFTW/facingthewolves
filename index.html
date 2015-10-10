@@ -20,26 +20,28 @@
 
     <body>
         
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="introduction" tabindex="-1" role="dialog" aria-labelledby="introductionLabel">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Welcome, brave hero!</h4>
+                  <h4 class="modal-title" id="introductionLabel">Welcome, brave hero!</h4>
                 </div>
                 <div class="modal-body">
                   Let me tell you something about this dangerous world so that you know what awaits in its darkest of places!
-                  <ul>
-                      <li>As you progress as a hero you will get more and more features that will help you on your adventure.</li>
-                      <li></li>
-                  </ul>
+                  <div class="well">
+                            <ul>
+                                <li>As you progress as a hero you will get more and more features that will help you on your adventure.</li>
+                                <li></li>
+                            </ul>
+                  </div>
                 </div>
               </div>
             </div>
         </div>
         
         <div class="page-header" id="header">
-            <h4>Facing the Wolves <small>v0.1.0</small></h4>
+            <h4>Facing the Wolves <small>v0.3.0</small></h4>
         </div>
         <div class="container-fluid" role="tabpanel">
 
@@ -132,12 +134,72 @@
                                             </button>
                                         </div>
                                     </div>
+                                    <br><button class="btn btn-primary" id="generateItem">Generate Testitem</button>
                                 </div>
                             </div>
                             
                             <div role="tabpanel" class="tab-pane" id="tabInventory">
                                 <div class="container-fluid">
-                                    
+                                    <table class="table table-bordered" id="tableInventory">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem1">Test</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem2">Test</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem3">Test</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem4">Test</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem5">Test</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem6">Test</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem7">Test</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem8">Test</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem9">Test</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-toggle="popover"
+                                                            class="btn-block btn btn-primary" id="inventoryItem10">Test</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-bordered" id="tableInventoryEquipped">
+                                        <tbody>
+                                            <tr>
+                                                <td>lel</td>
+                                                <td>lel</td>
+                                                <td>lel</td>
+                                                <td>lel</td>
+                                                <td>lel</td>
+                                                <td>lel</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             
@@ -225,6 +287,10 @@
                                 <li class="list-group-item">
                                     Needed XP 
                                     <span class="badge" id="badgeNeededXP">    
+                                    </span>
+                                    <br>
+                                    CurrentXP
+                                    <span class="badge" id="badgeCurrentXP">    
                                     </span>
                                     <br>
                                     <div class="progress">

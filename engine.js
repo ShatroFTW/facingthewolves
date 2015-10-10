@@ -3,6 +3,7 @@ var Engine = {
 	timeNow: new Date().getTime(),
 	ticks: 0,
 	idleSpeed: 1000,
+        shopCooldown: 10800000,
 	idleTimer: function() {
 		
 		Engine.timeNow = new Date().getTime();
@@ -24,14 +25,19 @@ var Engine = {
 };
 
 window.onload = function() {
-    //if(!window.localStorage.getItem("savechar"))
-        //$('#myModal').modal("show");
+    if(!window.localStorage.getItem("savechar"))
+        $('#introduction').modal("show");
     
-        load();
-	Engine.init();
-        checkUnlockedWorld();
-        checkUnlockedTabs();
-        updateLabels();
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+    
+    load();
+    save();
+    Engine.init();
+    checkUnlockedWorld();
+    checkUnlockedTabs();
+    updateLabels();
 };
 
 window.onbeforeunload = function() {
@@ -64,7 +70,7 @@ $(function() {
            window.localStorage.removeItem("saveworld");
            console.log("deleted!");
            resetValues();
-           //$('#myModal').modal("show");
+           $('#introduction').modal("show");
        }
    });
 });
@@ -73,15 +79,15 @@ function resetValues() {
   char.level = 1;
   char.currentXP = 0;
   char.neededXP = 500;
-  char.damage = 10;
+  char.damage = 100;
   char.critChance = 5;
   char.critDmg = 50;
   char.prestige = 0;
   char.currentMoney = 0;
   char.nextHitCrit = false;
-  enemy.maxHP = 50;
-  enemy.currentHP = 50;
-  enemy.xp = 5;
+  enemy.maxHP = 500;
+  enemy.currentHP = 500;
+  enemy.xp = 20;
   enemy.gold = 50;
   world.currentWorld = 1;
   world.maxWorld = 1;
@@ -89,14 +95,17 @@ function resetValues() {
   world.autoProgress = false;
   $("#prevWorld").prop('disabled', true);
   $("#nextWorld").prop('disabled', true);
+  $("#autoProgress").removeClass("active");
+  $("#autoProgressLabel").html("Auto Progress: OFF");
   $("#tabDungeonHandler").hide();
 };
 
 function checkUnlockedTabs() {
-    if(char.level > 10) {
+    if(char.level >= 10) {
         $("#tabDungeonHandler").show();
-    }else
+    }else {
         $("#tabDungeonHandler").hide();
+    }
     /*if(dungeon.beaten >= 1) {
         $("#tabInventoryHandler").show();
     }*/
@@ -107,7 +116,7 @@ var char = {
     level: 1,
     currentXP: 0,
     neededXP: 500,
-    damage: 10,
+    damage: 100,
     critChance: 5,
     critDmg: 50,
     prestige: 0,
@@ -116,10 +125,11 @@ var char = {
 };
 
 var enemy = {
-    maxHP: 50,
-    currentHP: 50,
-    xp: 5,
+    maxHP: 500,
+    currentHP: 500,
+    xp: 20,
     gold: 50
+
 };
 
 var world = {
@@ -129,8 +139,48 @@ var world = {
     autoProgress: false
 };
 
+function createItem() {
+    
+    itemName = "";
+    itemType = "Weapon";
+    rarity = 0;
+    rarityName = "";
+    bonusDamage = 0;
+    
+    
+    /*var randomGen = (Math.random() * 100)+1;
+    
+    if(randomGen <= 3) {
+        rarity = 4;
+        rarityName = "Legendary ";
+        bonusDamage = char.damage * (1 + (((Math.random() * 100) + 85)/100));
+    }
+    else if(randomGen <= 17 && randomGen > 3) {
+        rarity = 3;
+        rarityName = "Rare ";
+        bonusDamage = char.damage * (1 + (((Math.random() * 80) + 50)/100));
+    }
+    else if(randomGen <= 35 && randomGen > 17) {
+        rarity = 2;
+        rarityName = "Magic ";
+        bonusDamage = char.damage * (1 + (((Math.random() * 45) + 30)/100));
+
+    }
+    else {
+        rarity = 1;
+        rarityName = "Common ";
+        bonusDamage = char.damage * (1 + (((Math.random() * 20) + 5)/100));
+    }*/
+};
+
+var inventory = [];
+
+var shop = {
+    
+};
+
 function critRoll() {
-    var crit = Math.floor(Math.random()*100+1);
+    var crit = beautify(Math.random()*100+1);
     if( crit <= char.critChance)
         char.nextHitCrit = true;
     else
@@ -154,6 +204,7 @@ function fight() {
         else
             enemy.currentHP -= char.damage;
     }
+    save();
 };
 
 function enemyKilled() {
@@ -183,27 +234,30 @@ function updateLabels() {
         $("#autoProgress").addClass("active");
         $("#autoProgressLabel").html("Auto Progress: ON");
     }
-        
     var percentageHP = Math.floor((enemy.currentHP/enemy.maxHP)*100);
     var percentageXP = Math.floor((char.currentXP/char.neededXP)*100);
     $("#fightbar").css("width",percentageHP+"%").attr("aria-valuenow",percentageHP+"%");
-    $("#fightbar").html(enemy.currentHP);
+    $("#fightbar").html(beautify(enemy.currentHP));
     $("#xpbar").css("width",percentageXP+"%").attr("aria-valuenow",percentageXP+"%");
-    $("#xpbar").html(percentageXP+"%");
-    $("#badgeCurrentMoney").html(char.currentMoney);
+    $("#xpbar").html(Math.floor(percentageXP)+"%");
+    $("#badgeCurrentMoney").html(beautify(char.currentMoney));
     $("#badgeLevel").html(char.level);
-    $("#badgeDmg").html(char.damage);
-    $("#badgeCritChance").html(char.critChance+"%");
-    $("#badgeCritDmg").html(char.critDmg+"%");
-    $("#badgePrestige").html(char.prestige);
-    if(char.level < 50)
-        $("#badgeNeededXP").html(char.neededXP);
-    else
+    $("#badgeDmg").html(beautify(char.damage));
+    $("#badgeCritChance").html(Math.floor(char.critChance)+"%");
+    $("#badgeCritDmg").html(Math.floor(char.critDmg)+"%");
+    $("#badgePrestige").html(beautify(char.prestige));
+    if(char.level < 50) {
+        $("#badgeNeededXP").html(beautify(char.neededXP));
+        $("#badgeCurrentXP").html(beautify(char.currentXP));
+    }
+    else {
         $("#badgeNeededXP").html("MAX");
+        $("#badgeCurrentXP").html("MAX");
+    }
     $("#badgeWorld").html(world.currentWorld);
-    $("#badgeEnemyMaxHP").html(enemy.maxHP);
-    $("#badgeEnemyXP").html(enemy.xp);
-    $("#badgeEnemyGold").html(enemy.gold);
+    $("#badgeEnemyMaxHP").html(beautify(enemy.maxHP));
+    $("#badgeEnemyXP").html(beautify(enemy.xp));
+    $("#badgeEnemyGold").html(beautify(enemy.gold));
     $("#badgeKillsNeeded").html(world.killsNeeded);
     $("#prevWorldLabel").html("World "+(world.currentWorld-1));
     $("#nextWorldLabel").html("World "+(world.currentWorld+1));
@@ -218,9 +272,9 @@ function levelUp() {
         char.neededXP = 100; 
     }else if(char.level < 50) {
     char.level += 1;
-    char.damage += 10;
+    char.damage = (Math.pow(char.level,1.1)*10)+100;
     char.currentXP = Math.floor((char.currentXP+enemy.xp)%char.neededXP);
-    char.neededXP = Math.floor((Math.pow(char.level,1.7)*500));
+    char.neededXP = Math.floor((Math.pow(char.level,3)*500));
     }
     
     char.critChance = Math.floor(Math.pow(char.level,0.78)+4);
@@ -229,7 +283,22 @@ function levelUp() {
 };
 
 function beautify(number) {
-    return Math.floor(number*100) / 100;
+    var num = Math.floor((number*100) / 100);
+    
+    var suffixes = ["K"  ,"M"  ,"B"  ,"T"   ,"Qa"  ,"Qt"  ,"Sx"  ,"Sp"  ,"Oc"  ,"No","Dc",
+                          "UDc","DDc","TDc","QaDc","QtDc","SxDc","SpDc","OcDc","NoDc","Vg",
+                          "UVg","DVg","TVg","QaVg","QtDc","SxVg","SpVg","OcVg","NoVg","Tr",
+                          "UTr","DTr","TTr","QaTr","QtTr","SxTr","SpTr","OcTr","NoTr","Qu",
+                          "UQu","DQu","TQu","QaQu","QtQu","SxQu","SpQu","OcQu","NoQu","Qi",
+                          "UQi","DQi","TQi","QaQi","QtQi","SxQi","SpQi","OcQi","NoQi"];
+    
+    for (var i = suffixes.length - 1;i >= 0;i--){
+        if (num >= Math.pow(1000,i + 1)){
+            return (num / Math.pow(1000,i + 1)).toFixed(2) + suffixes[i];
+        }
+    }
+    
+    return num;
 };
 
 $(function () {
@@ -249,13 +318,7 @@ function nextWorld() {
         }
     
         world.currentWorld++;
-        enemy.gold += 20;
-        enemy.xp += 10;
-        enemy.maxHP += 50;
-        enemy.currentHP = enemy.maxHP;
-        
-        checkUnlockedWorld();
-        updateLabels();
+        generateWorld();
 };
 
 $(function () {
@@ -265,19 +328,20 @@ $(function () {
             $("#prevWorld").prop('disabled', true);
         
         world.currentWorld--;
-        enemy.gold -= 20;
-        enemy.xp -= 10;
-        enemy.maxHP -= 50;
-        enemy.currentHP = enemy.maxHP;
         world.autoProgress = false;
-        checkUnlockedWorld();
-        updateLabels();
+        generateWorld();
     }
     );
 });
 
 function generateWorld() {
     
+    enemy.xp = (Math.pow(world.currentWorld,1.1))*20;
+    enemy.maxHP = Math.pow(world.currentWorld,1.5)*500;
+    enemy.currentHP = enemy.maxHP;
+    enemy.gold = Math.pow(world.currentWorld,2) * 50;
+    checkUnlockedWorld();
+    updateLabels();
 };
 
 function checkUnlockedWorld() {
@@ -304,6 +368,18 @@ $(function () {
             $("#autoProgress").removeClass("active");
             $("#autoProgressLabel").html("Auto Progress: OFF");
         }
+    }
+    );
+});
+
+
+
+
+
+$(function () {
+    $("#generateItem").click(function ()
+    {
+        
     }
     );
 });

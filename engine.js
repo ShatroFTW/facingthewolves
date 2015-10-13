@@ -1,8 +1,25 @@
+  (function(i,s,o,g,r,a,m){
+      i['GoogleAnalyticsObject']=r;
+      i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments);
+  },
+  i[r].l=1*new Date();
+  a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];
+  a.async=1;
+  a.src=g;
+  m.parentNode.insertBefore(a,m);
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-68773342-1', 'auto');
+  ga('send', 'pageview');
+
+
 var Engine = {
 	timeThen: new Date().getTime(),
 	timeNow: new Date().getTime(),
 	ticks: 0,
-	idleSpeed: 1000,
+	idleSpeed: 100,
         shopCooldown: 10800000,
 	idleTimer: function() {
 		
@@ -14,34 +31,35 @@ var Engine = {
                         critRoll();
                         fight();
                         updateLabels();
+                        save();
 			timeDifference -= Engine.idleSpeed;
 			Engine.ticks += Engine.idleSpeed;
 		}
 		setTimeout(Engine.idleTimer, (Engine.idleSpeed - timeDifference));
 	},
 	init: function() {
-		Engine.idleTimer();	
+                
+                if(window.localStorage.getItem("savechar"))
+                    load();
+                else
+                    $('#introduction').modal("show");
+                checkUnlockedWorld();
+                checkUnlockedTabs();
+                updateLabels();
+		Engine.idleTimer();
+                save();
 	}
 };
 
 window.onload = function() {
-    if(!window.localStorage.getItem("savechar"))
-        $('#introduction').modal("show");
+    
     
     $(function () {
         $('[data-toggle="popover"]').popover();
     });
     
-    load();
-    save();
+    
     Engine.init();
-    checkUnlockedWorld();
-    checkUnlockedTabs();
-    updateLabels();
-};
-
-window.onbeforeunload = function() {
-    save();
 };
 
 function save() {
@@ -77,6 +95,7 @@ $(function() {
 
 function resetValues() {
   char.level = 1;
+  char.totalXP = 0;
   char.currentXP = 0;
   char.neededXP = 500;
   char.damage = 100;
@@ -88,7 +107,7 @@ function resetValues() {
   enemy.maxHP = 500;
   enemy.currentHP = 500;
   enemy.xp = 20;
-  enemy.gold = 50;
+  enemy.gold = 5;
   world.currentWorld = 1;
   world.maxWorld = 1;
   world.killsNeeded = 10;
@@ -114,6 +133,7 @@ function checkUnlockedTabs() {
 
 var char = {
     level: 1,
+    totalXP: 0,
     currentXP: 0,
     neededXP: 500,
     damage: 100,
@@ -128,7 +148,7 @@ var enemy = {
     maxHP: 500,
     currentHP: 500,
     xp: 20,
-    gold: 50
+    gold: 5
 
 };
 
@@ -139,9 +159,20 @@ var world = {
     autoProgress: false
 };
 
+function Item(rarity, rarityName, itemType, bonusDmg, bonusCC, bonusCD, bonusXP) {
+    this.rarity = rarity;
+    this.rarityName = rarityName;
+    this.itemType = itemType;
+    this.itemName = rarityName + itemType;
+    this.bonusDmg = bonusDmg;
+    this.bonusCC = bonusCC;
+    this.bonusCD = bonusCD;
+    this.bonusXP = bonusXP;
+};
+
 function createItem() {
     
-    itemName = "";
+    /*itemName = "";
     itemType = "Weapon";
     rarity = 0;
     rarityName = "";
@@ -171,9 +202,11 @@ function createItem() {
         rarityName = "Common ";
         bonusDamage = char.damage * (1 + (((Math.random() * 20) + 5)/100));
     }*/
+    var tempItem = new Item(1, "Common ", "Helmet", 30, 0, 0, 0);
+    return tempItem;
 };
 
-var inventory = [];
+var equipment = [];
 
 var shop = {
     
@@ -211,8 +244,11 @@ function enemyKilled() {
     if(char.currentXP + enemy.xp >= char.neededXP) {
         levelUp();
     }
-    else if(char.level < 50)
+    else if(char.level < 50) {
+        char.totalXP += enemy.xp;
         char.currentXP += enemy.xp;
+    }
+        
     
     char.currentMoney += enemy.gold;
     
@@ -245,6 +281,7 @@ function updateLabels() {
     $("#badgeDmg").html(beautify(char.damage));
     $("#badgeCritChance").html(Math.floor(char.critChance)+"%");
     $("#badgeCritDmg").html(Math.floor(char.critDmg)+"%");
+    $("#badgeTotalXP").html(beautify(char.totalXP));
     $("#badgePrestige").html(beautify(char.prestige));
     if(char.level < 50) {
         $("#badgeNeededXP").html(beautify(char.neededXP));
@@ -269,12 +306,14 @@ function levelUp() {
     if(char.level+1 === 50) {
         char.level += 1;
         char.currentXP = 100;
-        char.neededXP = 100; 
+        char.neededXP = 100;
+        char.totalXP += enemy.xp;
     }else if(char.level < 50) {
     char.level += 1;
-    char.damage = (Math.pow(char.level,1.1)*10)+100;
+    char.damage = (Math.pow(1.3,char.level-1)*100)+100;
+    char.totalXP += enemy.xp;
     char.currentXP = Math.floor((char.currentXP+enemy.xp)%char.neededXP);
-    char.neededXP = Math.floor((Math.pow(char.level,3)*500));
+    char.neededXP = Math.floor((Math.pow(char.level,2)*100)+400);
     }
     
     char.critChance = Math.floor(Math.pow(char.level,0.78)+4);
@@ -336,10 +375,10 @@ $(function () {
 
 function generateWorld() {
     
-    enemy.xp = (Math.pow(world.currentWorld,1.1))*20;
-    enemy.maxHP = Math.pow(world.currentWorld,1.5)*500;
+    enemy.xp = Math.pow(1.1,(world.currentWorld-1))*20;
+    enemy.maxHP = Math.pow(1.2,world.currentWorld-1)*500;
     enemy.currentHP = enemy.maxHP;
-    enemy.gold = Math.pow(world.currentWorld,2) * 50;
+    enemy.gold = Math.pow(1.15,world.currentWorld-1) * 5;
     checkUnlockedWorld();
     updateLabels();
 };
@@ -379,7 +418,7 @@ $(function () {
 $(function () {
     $("#generateItem").click(function ()
     {
-        
+        console.log(JSON.stringify(createItem()));
     }
     );
 });

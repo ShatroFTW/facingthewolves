@@ -41,7 +41,7 @@
         </div>
         
         <div class="page-header" id="header">
-            <h4>Facing the Wolves <small>v0.3.0</small></h4>
+            <h4>Facing the Wolves <small>v0.5.0</small></h4>
         </div>
         <div class="container-fluid" role="tabpanel">
 
@@ -211,7 +211,32 @@
                             
                             <div role="tabpanel" class="tab-pane" id="tabRest">
                                 <div class="container-fluid">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            Current Prestige Points
+                                            <span class="badge" id="badgeCurrentPrestige">
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            Prestige Points after Rest
+                                            <span class="badge" id="badgePrestigeAfterRest">
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            Prestige Bonus gained for each point
+                                            <span class="badge" id="badgePrestigeBonus">
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            Current Prestige Bonus
+                                            <span class="badge" id="badgeCurrentPrestigeBonus">
+                                            </span>
+                                        </li>
+                                    </ul>
                                     
+                                    <button type="button" class="btn btn-primary" id="rest">
+                                        Rest now!
+                                    </button>
                                 </div>
                             </div>
                             

@@ -26,7 +26,7 @@ var Engine = {
     timeNow: new Date().getTime(),
     ticks: 0,
     idleSpeed: 1000,
-    shopCooldown: 10800000,
+    //shopCooldown: 10800000,
     idleTimer: function () {
 
         Engine.timeNow = new Date().getTime();
@@ -78,12 +78,11 @@ window.onload = function () {
 ///////////////////////////////////////////////////////
 function save() {
     var savechar = JSON.stringify(char);
-    window.localStorage.setItem("savechar", savechar);
+    window.localStorage.setItem("savechar",savechar);
     var saveenemy = JSON.stringify(enemy);
-    window.localStorage.setItem("saveenemy", saveenemy);
+    window.localStorage.setItem("saveenemy",saveenemy);
     var saveworld = JSON.stringify(world);
-    window.localStorage.setstringify(world);
-    window.localStorageItem("saveworld", saveworld);
+    window.localStorage.setItem("saveworld",saveworld);
 };
 
 ///////////////////////////////////////////////////////
@@ -325,7 +324,7 @@ function fight() {
                 enemy.currentHP -= char.damage;
         }
     }
-    else {
+    /*else {
         if (enemy.currentHP === 0) {
             enemyKilled();
             enemy.currentHP = enemy.maxHP;
@@ -341,7 +340,7 @@ function fight() {
             else
                 enemy.currentHP -= char.damage;
         }
-    }
+    }*/
 }
 ;
 

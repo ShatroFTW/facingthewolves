@@ -19,7 +19,7 @@ ga('send', 'pageview');
 
 
 ///////////////////////////////////////////////////////
-//Engine Timer and Stuff                             //
+//Engine Timer and routines per tick                 //
 ///////////////////////////////////////////////////////
 var Engine = {
     timeThen: new Date().getTime(),
@@ -37,7 +37,7 @@ var Engine = {
             critRoll();
             fight();
             updateLabels();
-            checkUnlockedTabs();
+            checkElementsShow();
             save();
             calcPrestige();
             timeDifference -= Engine.idleSpeed;
@@ -51,9 +51,13 @@ var Engine = {
             load();
         else
             $('#introduction').modal("show");
+        
+        
         updateLabels();
         checkUnlockedWorld();
-        checkUnlockedTabs();
+        checkElementsShow();
+        if(world.killsNeeded === 0)
+            $("#nextWorld").prop('disabled', false);
         Engine.idleTimer();
         save();
     }
@@ -106,12 +110,13 @@ $(function () {
             window.localStorage.removeItem("saveenemy");
             window.localStorage.removeItem("saveworld");
             console.log("deleted!");
-            resetValues();
             $('#introduction').modal("show");
             char.prestigeWithRest = 0;
             char.prestige = 0;
             char.prestigeBonus = 2;
+            char.prestigeCounter = 0;
             char.totalXP = 0;
+            resetValues();
         }
     });
 });
@@ -130,7 +135,7 @@ function resetValues() {
     char.nextHitCrit = false;
     enemy.maxHP = 500;
     enemy.currentHP = 500;
-    enemy.xp = applyPrestigeBonus(20);
+    enemy.xp = 20;
     enemy.gold = 5;
     world.currentWorld = 1;
     world.maxWorld = 1;
@@ -157,18 +162,26 @@ function applyPrestigeBonus(number) {
 //Checks what tabs should be unlocked at current game//
 //state                                              //
 ///////////////////////////////////////////////////////
-function checkUnlockedTabs() {
-    if (char.level >= 10) {
+function checkElementsShow() {
+    if (char.level === 50) {
         $("#tabDungeonHandler").show();
     } else {
         $("#tabDungeonHandler").hide();
     }
-    /*if(dungeon.beaten >= 1) {
-     $("#tabInventoryHandler").show();
-     }*/
+    
+    if (char.prestigeCounter >= 1) {
+        $("#autoProgress").show();
+    }
+    else
+        $("#autoProgress").hide();
+    
+    if(world.currentWorld % 10 === 0 || world.currentWorld < world.maxWorld ||
+            world.killsNeeded === 0)
+        $("#killsNeededLabel").hide();
+    else
+        $("#killsNeededLabel").show();
 
-}
-;
+};
 
 ///////////////////////////////////////////////////////
 //function to calculate the current amount of        //
@@ -192,6 +205,7 @@ var char = {
     prestigeWithRest: 0,
     prestige: 0,
     prestigeBonus: 2,
+    prestigeCounter: 0,
     currentMoney: 0,
     nextHitCrit: false
 };
@@ -307,7 +321,7 @@ function critRoll() {
 function fight() {
     var critHitDmg = char.damage * (1 + (char.critDmg / 100));
     //if there is still an enemy left to kill before a boss
-    if (world.killsNeeded > 0) {
+    //if (world.killsNeeded > 0) {
         if (enemy.currentHP === 0) {
             enemyKilled();
             enemy.currentHP = enemy.maxHP;
@@ -323,8 +337,8 @@ function fight() {
             else
                 enemy.currentHP -= char.damage;
         }
-    }
-    /*else {
+    //}
+   /*else {
         if (enemy.currentHP === 0) {
             enemyKilled();
             enemy.currentHP = enemy.maxHP;
@@ -341,8 +355,7 @@ function fight() {
                 enemy.currentHP -= char.damage;
         }
     }*/
-}
-;
+};
 
 function enemyKilled() {
     if (char.currentXP + enemy.xp >= char.neededXP) {
@@ -352,7 +365,6 @@ function enemyKilled() {
         char.totalXP += enemy.xp;
         char.currentXP += enemy.xp;
     }
-
 
     char.currentMoney += enemy.gold;
 
@@ -419,12 +431,12 @@ function levelUp() {
         char.level += 1;
         char.currentXP = 100;
         char.neededXP = 100;
-        char.totalXP += applyPrestigeBonus(enemy.xp);
+        char.totalXP += enemy.xp;
     } else if (char.level < 50) {
         char.level += 1;
-        char.damage = applyPrestigeBonus((Math.pow(1.15, char.level - 1) * 70) + 100);
-        char.totalXP += applyPrestigeBonus(enemy.xp);
-        char.currentXP = Math.floor((char.currentXP + applyPrestigeBonus(enemy.xp)) % char.neededXP);
+        char.damage = applyPrestigeBonus(Math.pow(1.15, char.level - 1) * 70) + 100;
+        char.totalXP += enemy.xp;
+        char.currentXP = Math.floor((char.currentXP + enemy.xp) % char.neededXP);
         char.neededXP = Math.floor((Math.pow(char.level, 2) * 400) + 100);
     }
 
@@ -471,6 +483,12 @@ function nextWorld() {
     }
 
     world.currentWorld++;
+    checkElementsShow();
+    /*if(world.maxWorld > 10)
+        $("#tabInventoryHandler").show();
+    else
+        $("#tabInventoryHandler").hide();
+    */
     generateWorld();
 }
 ;
@@ -482,6 +500,7 @@ $(function () {
             $("#prevWorld").prop('disabled', true);
 
         world.currentWorld--;
+        checkElementsShow();
         world.autoProgress = false;
         $("#autoProgress").removeClass("active");
         $("#autoProgressLabel").html("Auto Progress: OFF");
@@ -499,7 +518,7 @@ function generateWorld() {
     if(world.currentWorld === world.maxWorld)
         world.currentBossKilled = false;
 
-    enemy.xp = applyPrestigeBonus(Math.pow(1.2, (world.currentWorld - 1)) * 20);
+    enemy.xp = Math.pow(1.2, (world.currentWorld - 1)) * 20;
     enemy.maxHP = Math.pow(1.2, world.currentWorld - 1) * 500;
     enemy.currentHP = enemy.maxHP;
     enemy.gold = Math.pow(1.15, world.currentWorld - 1) * 5;
@@ -540,6 +559,7 @@ $(function () {
 $(function () {
     $("#rest").click(function () {
         char.prestige = char.prestigeWithRest;
+        char.prestigeCounter++;
         resetValues();
     });
 });

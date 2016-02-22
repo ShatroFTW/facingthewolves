@@ -32,7 +32,7 @@
                   <div class="well">
                             <ul>
                                 <li>As you progress as a hero you will get more and more features that will help you on your adventure.</li>
-                                <li></li>
+                                <li>(more text soon)</li>
                             </ul>
                   </div>
                 </div>
@@ -41,7 +41,7 @@
         </div>
         
         <div class="page-header" id="header">
-            <h4>Facing the Wolves <small>v0.5.0</small></h4>
+            <h4>Facing the Wolves <small>v0.6.0</small></h4>
         </div>
         <div class="container-fluid" role="tabpanel">
 
@@ -102,7 +102,7 @@
                                         </div>
                                     </div>
                                     
-                                    <ul class="list-group">
+                                    <ul class="list-group" id="killsNeededLabel">
                                         <li class="list-group-item">
                                             Kills needed to unlock World 
                                             <span id="nextWorldKills"></span>
@@ -144,46 +144,66 @@
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem1">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem2">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem3">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem4">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem5">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item 
+                                                    </button>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem6">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem7">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem8">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem9">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" data-toggle="popover"
-                                                            class="btn-block btn btn-primary" id="inventoryItem10">Test</button>
+                                                    <button type="button" class="btn btn-block btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover focus"
+                                                            title="Item name" data-content="various item details">
+                                                        Item
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -191,12 +211,30 @@
                                     <table class="table table-bordered" id="tableInventoryEquipped">
                                         <tbody>
                                             <tr>
-                                                <td>lel</td>
-                                                <td>lel</td>
-                                                <td>lel</td>
-                                                <td>lel</td>
-                                                <td>lel</td>
-                                                <td>lel</td>
+                                                <td data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover"
+                                                            title="Item name" data-content="various item details">
+                                                    Item
+                                                </td>
+                                                <td data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover"
+                                                            title="Item name" data-content="various item details">
+                                                    Item
+                                                </td>
+                                                <td data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover"
+                                                            title="Item name" data-content="various item details">
+                                                    Item
+                                                </td>
+                                                <td data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover"
+                                                            title="Item name" data-content="various item details">
+                                                    Item
+                                                </td>
+                                                <td data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover"
+                                                            title="Item name" data-content="various item details">
+                                                    Item
+                                                </td>
+                                                <td data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover"
+                                                            title="Item name" data-content="various item details">
+                                                    Item
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
